@@ -1,10 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+const navLinks = [
+  { label: "Home",         href: "/client"               },
+  { label: "About",        href: "/client/about"          },
+  { label: "Services",     href: "/client/services"       },
+  { label: "How It Works", href: "/client/how-it-works"   },
+  { label: "Contact",      href: "/client/contact"        },
+];
+
 export function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const [scrolled, setScrolled]     = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -13,21 +23,12 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const links = [
-    { label: "About", href: "#about" },
-    { label: "Services", href: "#services" },
-    { label: "How It Works", href: "#how" },
-    { label: "Contact", href: "#contact" },
-  ];
-
   return (
     <>
       <nav
         style={{
           position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
+          top: 0, left: 0, right: 0,
           zIndex: 1000,
           height: "72px",
           display: "flex",
@@ -42,78 +43,58 @@ export function Navbar() {
         }}
       >
         {/* Logo */}
-        <a
-          href="#home"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            textDecoration: "none",
-          }}
+        <Link
+          href="/client"
+          style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}
         >
           <div
             style={{
-              width: "36px",
-              height: "36px",
+              width: "36px", height: "36px",
               background: "linear-gradient(135deg, #00b4c8, #00d4eb)",
               borderRadius: "8px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              display: "flex", alignItems: "center", justifyContent: "center",
               fontSize: "18px",
               boxShadow: "0 0 20px rgba(0,180,200,0.3)",
             }}
-          >
-            ⚕
-          </div>
+          >⚕</div>
           <span
             style={{
               fontFamily: "var(--font-cormorant, 'Cormorant Garamond', serif)",
-              fontSize: "1.5rem",
-              fontWeight: 600,
-              color: "#f8f6f0",
+              fontSize: "1.5rem", fontWeight: 600, color: "#f8f6f0",
             }}
           >
             Claim<span style={{ color: "#00b4c8" }}>Bridge</span>
           </span>
-        </a>
+        </Link>
 
         {/* Desktop links */}
         <ul
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "2.5rem",
-            listStyle: "none",
-            margin: 0,
-            padding: 0,
-          }}
           className="hidden md:flex"
+          style={{ display: "flex", alignItems: "center", gap: "2.25rem", listStyle: "none", margin: 0, padding: 0 }}
         >
-          {links.map((l) => (
-            <li key={l.label}>
-              <a
-                href={l.href}
-                style={{
-                  color: "#e8e4da",
-                  textDecoration: "none",
-                  fontSize: "0.875rem",
-                  fontWeight: 400,
-                  letterSpacing: "0.04em",
-                  textTransform: "uppercase",
-                  transition: "color 0.2s",
-                }}
-                onMouseEnter={(e) =>
-                  ((e.target as HTMLElement).style.color = "#f8f6f0")
-                }
-                onMouseLeave={(e) =>
-                  ((e.target as HTMLElement).style.color = "#e8e4da")
-                }
-              >
-                {l.label}
-              </a>
-            </li>
-          ))}
+          {navLinks.map((l) => {
+            const active = pathname === l.href;
+            return (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  style={{
+                    color: active ? "#f8f6f0" : "#9aabb8",
+                    textDecoration: "none",
+                    fontSize: "0.875rem",
+                    fontWeight: active ? 500 : 400,
+                    letterSpacing: "0.04em",
+                    textTransform: "uppercase",
+                    transition: "color 0.2s",
+                    borderBottom: active ? "1px solid #00b4c8" : "1px solid transparent",
+                    paddingBottom: "2px",
+                  }}
+                >
+                  {l.label}
+                </Link>
+              </li>
+            );
+          })}
           <li>
             <Link
               href="/login"
@@ -129,12 +110,12 @@ export function Navbar() {
                 transition: "all 0.3s ease",
               }}
               onMouseEnter={(e) => {
-                (e.target as HTMLElement).style.background = "#00b4c8";
-                (e.target as HTMLElement).style.color = "#0a0f1e";
+                (e.currentTarget as HTMLElement).style.background = "#00b4c8";
+                (e.currentTarget as HTMLElement).style.color = "#0a0f1e";
               }}
               onMouseLeave={(e) => {
-                (e.target as HTMLElement).style.background = "transparent";
-                (e.target as HTMLElement).style.color = "#00b4c8";
+                (e.currentTarget as HTMLElement).style.background = "transparent";
+                (e.currentTarget as HTMLElement).style.color = "#00b4c8";
               }}
             >
               Staff Login
@@ -146,28 +127,19 @@ export function Navbar() {
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           className="flex md:hidden"
-          style={{
-            background: "none",
-            border: "none",
-            color: "#f8f6f0",
-            fontSize: "1.5rem",
-            cursor: "pointer",
-            padding: "0.25rem",
-          }}
+          style={{ background: "none", border: "none", color: "#f8f6f0", fontSize: "1.5rem", cursor: "pointer", padding: "0.25rem" }}
           aria-label="Toggle menu"
         >
           {mobileOpen ? "✕" : "☰"}
         </button>
       </nav>
 
-      {/* Mobile menu */}
+      {/* Mobile drawer */}
       {mobileOpen && (
         <div
           style={{
             position: "fixed",
-            top: "72px",
-            left: 0,
-            right: 0,
+            top: "72px", left: 0, right: 0,
             zIndex: 999,
             background: "rgba(10,15,30,0.98)",
             backdropFilter: "blur(20px)",
@@ -175,22 +147,23 @@ export function Navbar() {
             borderBottom: "1px solid rgba(255,255,255,0.06)",
           }}
         >
-          {links.map((l) => (
-            <a
-              key={l.label}
+          {navLinks.map((l) => (
+            <Link
+              key={l.href}
               href={l.href}
               onClick={() => setMobileOpen(false)}
               style={{
                 display: "block",
                 padding: "0.875rem 0",
-                color: "#e8e4da",
+                color: pathname === l.href ? "#f8f6f0" : "#9aabb8",
                 textDecoration: "none",
                 fontSize: "1rem",
                 borderBottom: "1px solid rgba(255,255,255,0.05)",
+                fontWeight: pathname === l.href ? 600 : 400,
               }}
             >
               {l.label}
-            </a>
+            </Link>
           ))}
           <Link
             href="/login"
