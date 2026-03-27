@@ -1,26 +1,120 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-outfit);
+  --font-serif: var(--font-cormorant);
   --font-mono: var(--font-geist-mono);
+
+  --color-navy:   #0a0f1e;
+  --color-navy-2: #0d1428;
+  --color-navy-3: #111c35;
+  --color-navy-4: #16244a;
+  --color-teal:   #00b4c8;
+  --color-teal-2: #00d4eb;
+  --color-gold:   #c9a84c;
+  --color-gold-2: #e8c876;
+  --color-cream:  #f8f6f0;
+  --color-cream-2: #e8e4da;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #0a0f1e;
+  --foreground: #f8f6f0;
+
+  --navy:   #0a0f1e;
+  --navy-2: #0d1428;
+  --navy-3: #111c35;
+  --navy-4: #16244a;
+  --teal:   #00b4c8;
+  --teal-2: #00d4eb;
+  --gold:   #c9a84c;
+  --gold-2: #e8c876;
+  --cream:  #f8f6f0;
+  --cream-2: #e8e4da;
+
+  --teal-glow: rgba(0, 180, 200, 0.15);
+  --gold-glow: rgba(201, 168, 76, 0.15);
+  --glass: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-strong: rgba(255, 255, 255, 0.07);
 }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--navy);
+  color: var(--cream);
+  font-family: var(--font-outfit, 'Outfit', sans-serif);
+  line-height: 1.6;
+  overflow-x: hidden;
 }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--navy-2); }
+::-webkit-scrollbar-thumb { background: var(--navy-4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--teal); }
+
+/* Glass card utility */
+.glass-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Glow utilities */
+.teal-glow  { box-shadow: 0 0 20px var(--teal-glow); }
+.gold-glow  { box-shadow: 0 0 20px var(--gold-glow); }
+
+/* Input/select overrides for dark theme */
+input, select, textarea {
+  background: var(--glass) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--cream) !important;
+  border-radius: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+input::placeholder, textarea::placeholder {
+  color: rgba(248, 246, 240, 0.35) !important;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--teal) !important;
+  box-shadow: 0 0 0 2px var(--teal-glow) !important;
+}
+select option {
+  background: var(--navy-3);
+  color: var(--cream);
+}
+
+/* Checkbox override */
+input[type="checkbox"] {
+  accent-color: var(--teal);
+  background: transparent !important;
+  border: 1px solid var(--glass-border) !important;
+}
+
+/* Table styles */
+table { border-collapse: collapse; width: 100%; }
+th {
+  background: var(--navy-3);
+  color: var(--cream-2);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.875rem;
+  color: var(--cream-2);
+}
+tr:hover td { background: rgba(0,180,200,0.04); }
