@@ -107,6 +107,14 @@ export default function ExplorerPage() {
 
   return (
     <ProtectedShell title="Master Explorer">
+      {/* Back button */}
+      <button
+        onClick={() => router.back()}
+        className="mb-4 flex items-center gap-1 text-sm text-slate-400 hover:text-white transition-colors"
+      >
+        ← Back
+      </button>
+
       {/* Filters */}
       <div className="grid gap-3 md:grid-cols-2">
         <div>
@@ -154,43 +162,51 @@ export default function ExplorerPage() {
       )}
 
       {/* Table */}
-      <div className="mt-3 overflow-auto rounded-xl border border-slate-200">
-        <table className="min-w-full text-sm">
-          <thead className="bg-slate-100 text-left">
+      <div className="mt-3 overflow-auto rounded-xl border border-slate-600">
+        <table className="min-w-full text-sm" style={{ background: "#ffffff", color: "#1e293b" }}>
+          <thead style={{ background: "#1e293b", color: "#f1f5f9" }}>
             <tr>
-              <th className="p-2 font-semibold">Scheme</th>
-              <th className="p-2 font-semibold">Type</th>
-              <th className="p-2 font-semibold">Specialty</th>
-              <th className="p-2 font-semibold">Package</th>
-              <th className="p-2 font-semibold">Procedure</th>
-              <th className="p-2 font-semibold text-right">Rate (₹)</th>
+              <th className="p-2 text-left text-xs font-semibold">Scheme</th>
+              <th className="p-2 text-left text-xs font-semibold">Type</th>
+              <th className="p-2 text-left text-xs font-semibold">Specialty</th>
+              <th className="p-2 text-left text-xs font-semibold">Package</th>
+              <th className="p-2 text-left text-xs font-semibold">Procedure</th>
+              <th className="p-2 text-right text-xs font-semibold">Rate (₹)</th>
             </tr>
           </thead>
           <tbody>
             {records.map((r) => (
-              <tr key={r.id} className="border-t border-slate-100 hover:bg-slate-50">
-                <td className="p-2 text-xs font-medium text-indigo-700">{r.scheme}</td>
-                <td className="p-2 text-xs">{r.record_type}</td>
-                <td className="p-2 text-xs">{r.specialty || "—"}</td>
-                <td className="p-2 text-xs">
+              <tr
+                key={r.id}
+                style={{ borderTop: "1px solid #e2e8f0", color: "#1e293b" }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#f0f4ff")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "#ffffff")}
+              >
+                <td className="p-2 text-xs font-semibold" style={{ color: "#4f46e5" }}>{r.scheme}</td>
+                <td className="p-2 text-xs" style={{ color: "#475569" }}>{r.record_type}</td>
+                <td className="p-2 text-xs" style={{ color: "#475569" }}>{r.specialty || "—"}</td>
+                <td className="p-2 text-xs" style={{ color: "#334155" }}>
                   {r.package_code && (
-                    <span className="mr-1 rounded bg-slate-100 px-1 font-mono text-[11px]">
+                    <span
+                      className="mr-1 rounded px-1 font-mono text-[11px]"
+                      style={{ background: "#e0e7ff", color: "#3730a3" }}
+                    >
                       {r.package_code}
                     </span>
                   )}
                   {r.package_name || "—"}
                 </td>
-                <td className="p-2 text-xs">{r.procedure_name || "—"}</td>
-                <td className="p-2 text-right text-xs tabular-nums">
+                <td className="p-2 text-xs" style={{ color: "#334155" }}>{r.procedure_name || "—"}</td>
+                <td className="p-2 text-right text-xs tabular-nums" style={{ color: "#0f766e", fontWeight: 600 }}>
                   {r.rate_primary != null
-                    ? Number(r.rate_primary).toLocaleString("en-IN")
+                    ? `₹${Number(r.rate_primary).toLocaleString("en-IN")}`
                     : "—"}
                 </td>
               </tr>
             ))}
             {!loading && records.length === 0 && (
               <tr>
-                <td colSpan={6} className="p-6 text-center text-slate-400">
+                <td colSpan={6} className="p-6 text-center" style={{ color: "#94a3b8" }}>
                   No records match your filters.
                 </td>
               </tr>
