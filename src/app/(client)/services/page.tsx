@@ -64,7 +64,7 @@ export default function ServicesPage() {
           Ready to see these services in action?
         </p>
         <Link
-          href="/client/contact"
+          href="/contact"
           style={{
             display: "inline-flex", alignItems: "center", gap: "8px",
             padding: "0.75rem 2rem",

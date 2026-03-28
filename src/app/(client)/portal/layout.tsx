@@ -12,10 +12,10 @@ import {
 } from "@/lib/patient-auth";
 
 const portalLinks = [
-  { href: "/client/portal",            label: "Dashboard", icon: "⊞" },
-  { href: "/client/portal/book-test",  label: "Find My Claims", icon: "📋" },
-  { href: "/client/portal/my-claims",  label: "My Claims", icon: "◈" },
-  { href: "/client/portal/profile",    label: "Profile & Docs", icon: "♦" },
+  { href: "/portal",            label: "Dashboard", icon: "⊞" },
+  { href: "/portal/book-test",  label: "Find My Claims", icon: "📋" },
+  { href: "/portal/my-claims",  label: "My Claims", icon: "◈" },
+  { href: "/portal/profile",    label: "Profile & Docs", icon: "♦" },
 ];
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
@@ -27,7 +27,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     if (!hasValidPatientToken()) {
-      router.replace("/client/portal/login");
+      router.replace("/portal/login");
       return;
     }
     setPatientId(getPatientId());
@@ -36,7 +36,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
 
   const handleLogout = () => {
     clearPatientSession();
-    router.push("/client/portal/login");
+    router.push("/portal/login");
   };
 
   return (
@@ -68,7 +68,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
       >
         {/* Logo + portal label */}
         <Link
-          href="/client/portal"
+          href="/portal"
           style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}
         >
           <div
@@ -339,7 +339,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
           © 2025 ClaimSure — Patient Portal
         </span>
         <Link
-          href="/client"
+          href="/"
           style={{ fontSize: "0.75rem", color: "#384456", textDecoration: "none" }}
         >
           ← Back to Website

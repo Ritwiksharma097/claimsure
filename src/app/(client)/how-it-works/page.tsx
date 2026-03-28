@@ -124,7 +124,7 @@ export default function HowItWorksPage() {
           Stop leaving revenue on the table.
         </p>
         <Link
-          href="/client/contact"
+          href="/contact"
           style={{
             display: "inline-flex", alignItems: "center", gap: "8px",
             padding: "0.75rem 2rem",

@@ -74,17 +74,17 @@ export function Footer() {
         <div style={{ display: "flex", gap: "4rem", flexWrap: "wrap" }}>
           <div>
             <div style={colHead}>Platform</div>
-            <Link href="/client/about" style={colLink}>About</Link>
-            <Link href="/client/services" style={colLink}>Services</Link>
-            <Link href="/client/how-it-works" style={colLink}>How It Works</Link>
-            <Link href="/client/contact" style={colLink}>Contact</Link>
+            <Link href="/about" style={colLink}>About</Link>
+            <Link href="/services" style={colLink}>Services</Link>
+            <Link href="/how-it-works" style={colLink}>How It Works</Link>
+            <Link href="/contact" style={colLink}>Contact</Link>
           </div>
 
           <div>
             <div style={colHead}>Access</div>
-            <Link href="/client/register" style={colLink}>Patient Register</Link>
-            <Link href="/client/portal/login" style={colLink}>Patient Login</Link>
-            <Link href="/client/contact" style={colLink}>Request Demo</Link>
+            <Link href="/register" style={colLink}>Patient Register</Link>
+            <Link href="/portal/login" style={colLink}>Patient Login</Link>
+            <Link href="/contact" style={colLink}>Request Demo</Link>
           </div>
 
           <div>

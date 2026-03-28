@@ -66,7 +66,7 @@ export default function ProfilePage() {
   const [notes, setNotes] = useState("");
 
   useEffect(() => {
-    if (!hasValidPatientToken()) { router.replace("/client/portal/login"); return; }
+    if (!hasValidPatientToken()) { router.replace("/portal/login"); return; }
     const headers = getPatientAuthHeader();
     void Promise.all([
       fetch(`${API}/patient/me`, { headers }).then((r) => r.ok ? r.json() : null),

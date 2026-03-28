@@ -18,7 +18,7 @@ export default function PatientLoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (hasValidPatientToken()) router.replace("/client/portal");
+    if (hasValidPatientToken()) router.replace("/portal");
   }, [router]);
 
   const handleLogin = async () => {
@@ -46,7 +46,7 @@ export default function PatientLoginPage() {
         full_name: string;
       };
       setPatientSession(data.access_token, data.patient_id, data.full_name);
-      router.push("/client/portal");
+      router.push("/portal");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed.");
     } finally {
@@ -82,7 +82,7 @@ export default function PatientLoginPage() {
       <div style={{ width: "100%", maxWidth: "420px", position: "relative", zIndex: 1 }}>
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-          <Link href="/client" style={{ textDecoration: "none", display: "inline-block" }}>
+          <Link href="/" style={{ textDecoration: "none", display: "inline-block" }}>
             <div
               style={{
                 width: "52px",
@@ -255,11 +255,11 @@ export default function PatientLoginPage() {
         >
           <span>
             Don&apos;t have an account?{" "}
-            <Link href="/client/register" style={{ color: "#00b4c8", textDecoration: "none" }}>
+            <Link href="/register" style={{ color: "#00b4c8", textDecoration: "none" }}>
               Register here
             </Link>
           </span>
-          <Link href="/client" style={{ color: "#384456", textDecoration: "none" }}>
+          <Link href="/" style={{ color: "#384456", textDecoration: "none" }}>
             ← Back to website
           </Link>
         </div>

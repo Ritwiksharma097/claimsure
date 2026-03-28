@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const navLinks = [
-  { label: "Home",         href: "/client"               },
-  { label: "About",        href: "/client/about"          },
-  { label: "Services",     href: "/client/services"       },
-  { label: "How It Works", href: "/client/how-it-works"   },
-  { label: "Contact",      href: "/client/contact"        },
+  { label: "Home",         href: "/"               },
+  { label: "About",        href: "/about"          },
+  { label: "Services",     href: "/services"       },
+  { label: "How It Works", href: "/how-it-works"   },
+  { label: "Contact",      href: "/contact"        },
 ];
 
 export function Navbar() {
@@ -44,7 +44,7 @@ export function Navbar() {
       >
         {/* Logo */}
         <Link
-          href="/client"
+          href="/"
           style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}
         >
           <div
@@ -97,7 +97,7 @@ export function Navbar() {
           })}
           <li>
             <Link
-              href="/client/portal"
+              href="/portal"
               style={{
                 padding: "0.5rem 1.5rem",
                 border: "1px solid rgba(0,180,200,0.4)",
@@ -122,7 +122,7 @@ export function Navbar() {
           </li>
           <li>
             <Link
-              href="/client/register"
+              href="/register"
               style={{
                 padding: "0.5rem 1.5rem",
                 background: "linear-gradient(135deg,#00b4c8,#00d4eb)",
@@ -185,7 +185,7 @@ export function Navbar() {
             </Link>
           ))}
           <Link
-            href="/client/portal"
+            href="/portal"
             onClick={() => setMobileOpen(false)}
             style={{
               display: "block",
@@ -203,7 +203,7 @@ export function Navbar() {
             My Portal
           </Link>
           <Link
-            href="/client/register"
+            href="/register"
             onClick={() => setMobileOpen(false)}
             style={{
               display: "block",

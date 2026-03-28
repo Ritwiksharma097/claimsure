@@ -79,7 +79,7 @@ export default function LoginPage() {
           }}
         >
           <Link
-            href="/client"
+            href="/"
             style={{ textDecoration: "none", display: "inline-block" }}
           >
             <div
@@ -258,7 +258,7 @@ export default function LoginPage() {
         >
           Not staff?{" "}
           <Link
-            href="/client"
+            href="/"
             style={{ color: "#00b4c8", textDecoration: "none" }}
           >
             Return to website

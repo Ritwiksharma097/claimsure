@@ -228,7 +228,7 @@ export default function RegisterPage() {
                 Register Another
               </button>
               <button
-                onClick={() => router.push("/client/portal/login")}
+                onClick={() => router.push("/portal/login")}
                 style={btnPrimaryStyle}
               >
                 Go to Login →
@@ -472,7 +472,7 @@ export default function RegisterPage() {
 
               <p style={{ textAlign: "center", fontSize: "0.8125rem", color: "#4a5a72", margin: 0 }}>
                 Already have an account?{" "}
-                <Link href="/client/portal/login" style={{ color: "#00b4c8", textDecoration: "none" }}>
+                <Link href="/portal/login" style={{ color: "#00b4c8", textDecoration: "none" }}>
                   Sign in here
                 </Link>
               </p>

@@ -291,7 +291,7 @@ export function ProtectedShell({
           {/* Right actions */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
             <Link
-              href="/client"
+              href="/"
               style={{
                 fontSize: "0.75rem",
                 color: "#384456",

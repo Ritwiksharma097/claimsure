@@ -33,7 +33,7 @@ export default function PatientPortalDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!hasValidPatientToken()) { router.replace("/client/portal/login"); return; }
+    if (!hasValidPatientToken()) { router.replace("/portal/login"); return; }
     setName(getPatientName());
     setPatientId(getPatientId());
 
@@ -54,21 +54,21 @@ export default function PatientPortalDashboard() {
 
   const tiles = [
     {
-      href: "/client/portal/book-test",
+      href: "/portal/book-test",
       icon: "📋",
       title: "Find My Claim Packages",
       desc: "Tell us your treatment — we show all matching claim packages available for your scheme.",
       accent: "#00b4c8",
     },
     {
-      href: "/client/portal/my-claims",
+      href: "/portal/my-claims",
       icon: "◈",
       title: "My Claims & Bookings",
       desc: "Track the status of your submitted claims and view SSO acknowledgement numbers.",
       accent: "#c9a84c",
     },
     {
-      href: "/client/portal/profile",
+      href: "/portal/profile",
       icon: "♦",
       title: "Profile & Documents",
       desc: "Update your details and upload Aadhaar, Jan Aadhaar, or other identity documents.",
@@ -107,7 +107,7 @@ export default function PatientPortalDashboard() {
             ◈ Patient Portal
           </div>
           <button
-            onClick={() => { clearPatientSession(); router.push("/client/portal/login"); }}
+            onClick={() => { clearPatientSession(); router.push("/portal/login"); }}
             style={{
               padding: "0.5rem 1.25rem",
               background: "rgba(239,68,68,0.12)",
@@ -250,7 +250,7 @@ export default function PatientPortalDashboard() {
             Recent Bookings
           </h3>
           <Link
-            href="/client/portal/my-claims"
+            href="/portal/my-claims"
             style={{ fontSize: "0.8125rem", color: "#00b4c8", textDecoration: "none" }}
           >
             View all →
@@ -266,7 +266,7 @@ export default function PatientPortalDashboard() {
             <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📋</div>
             <p style={{ color: "#4a5a72", fontSize: "0.875rem", margin: 0 }}>
               No bookings yet.{" "}
-              <Link href="/client/portal/book-test" style={{ color: "#00b4c8", textDecoration: "none" }}>
+              <Link href="/portal/book-test" style={{ color: "#00b4c8", textDecoration: "none" }}>
                 Find claim packages →
               </Link>
             </p>

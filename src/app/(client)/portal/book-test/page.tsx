@@ -46,7 +46,7 @@ export default function FindMyClaimsPage() {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (!hasValidPatientToken()) { router.replace("/client/portal/login"); return; }
+    if (!hasValidPatientToken()) { router.replace("/portal/login"); return; }
     void fetch(`${API}/public/schemes`)
       .then(async (r) => { if (r.ok) setSchemes((await r.json()) as Scheme[]); });
   }, [router]);
@@ -157,7 +157,7 @@ export default function FindMyClaimsPage() {
             Find Another Claim
           </button>
           <button
-            onClick={() => router.push("/client/portal/my-claims")}
+            onClick={() => router.push("/portal/my-claims")}
             style={btnPrimary}
           >
             View My Claims →

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const quickLinks = [
   {
-    href: "/client/about",
+    href: "/about",
     icon: "🏥",
     title: "About Us",
     desc: "Learn how ClaimSure was built by claims specialists with a decade of real hospital experience.",
@@ -12,7 +12,7 @@ const quickLinks = [
     cta: "Learn more →",
   },
   {
-    href: "/client/services",
+    href: "/services",
     icon: "📋",
     title: "Our Services",
     desc: "Pre-auth, cashless processing, patient records, compliance audits, analytics, and insurer liaison.",
@@ -20,7 +20,7 @@ const quickLinks = [
     cta: "View services →",
   },
   {
-    href: "/client/register",
+    href: "/register",
     icon: "📝",
     title: "Patient Register",
     desc: "Register yourself or a family member for insurance claims. Takes less than 2 minutes.",
@@ -28,7 +28,7 @@ const quickLinks = [
     cta: "Register now →",
   },
   {
-    href: "/client/how-it-works",
+    href: "/how-it-works",
     icon: "⚡",
     title: "How It Works",
     desc: "Four simple steps from patient onboarding to final settlement reconciliation.",
@@ -36,7 +36,7 @@ const quickLinks = [
     cta: "See process →",
   },
   {
-    href: "/client/contact",
+    href: "/contact",
     icon: "✉️",
     title: "Get in Touch",
     desc: "Ready to transform your claims process? Request a demo in under 30 minutes.",

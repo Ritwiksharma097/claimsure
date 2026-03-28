@@ -69,7 +69,7 @@ export default function MyClaimsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!hasValidPatientToken()) { router.replace("/client/portal/login"); return; }
+    if (!hasValidPatientToken()) { router.replace("/portal/login"); return; }
     const headers = getPatientAuthHeader();
     void Promise.all([
       fetch(`${API}/patient/bookings`, { headers }).then((r) => r.ok ? r.json() : []),
@@ -170,7 +170,7 @@ export default function MyClaimsPage() {
               You have not booked any procedures yet.
             </p>
             <Link
-              href="/client/portal/book-test"
+              href="/portal/book-test"
               style={{
                 padding: "0.75rem 1.75rem",
                 background: "linear-gradient(135deg,#00b4c8,#00d4eb)",
