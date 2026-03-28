@@ -56,8 +56,8 @@ export default function PatientPortalDashboard() {
     {
       href: "/client/portal/book-test",
       icon: "📋",
-      title: "Book a Test / Treatment",
-      desc: "Select your scheme and procedure from the master list and submit a booking request.",
+      title: "Find My Claim Packages",
+      desc: "Tell us your treatment — we show all matching claim packages available for your scheme.",
       accent: "#00b4c8",
     },
     {
@@ -246,7 +246,7 @@ export default function PatientPortalDashboard() {
             <p style={{ color: "#4a5a72", fontSize: "0.875rem", margin: 0 }}>
               No bookings yet.{" "}
               <Link href="/client/portal/book-test" style={{ color: "#00b4c8", textDecoration: "none" }}>
-                Book a test now →
+                Find claim packages →
               </Link>
             </p>
           </div>

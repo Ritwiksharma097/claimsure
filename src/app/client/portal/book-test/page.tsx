@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import type { CSSProperties } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { getPatientAuthHeader, hasValidPatientToken } from "@/lib/patient-auth";
 
@@ -19,49 +19,76 @@ type Procedure = {
   los: string | null;
 };
 
-export default function BookTestPage() {
+type GroupedProcedures = Record<string, Procedure[]>;
+
+function groupBySpecialty(items: Procedure[]): GroupedProcedures {
+  return items.reduce<GroupedProcedures>((acc, p) => {
+    const key = p.specialty ?? "General";
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(p);
+    return acc;
+  }, {});
+}
+
+export default function FindMyClaimsPage() {
   const router = useRouter();
   const [schemes, setSchemes] = useState<Scheme[]>([]);
   const [procedures, setProcedures] = useState<Procedure[]>([]);
   const [selectedScheme, setSelectedScheme] = useState("");
-  const [search, setSearch] = useState("");
+  const [condition, setCondition] = useState("");
   const [selected, setSelected] = useState<Procedure | null>(null);
-  const [preferredDate, setPreferredDate] = useState("");
+  const [expandedSpecialties, setExpandedSpecialties] = useState<Set<string>>(new Set());
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
-  const [searching, setSearching] = useState(false);
+  const [fetching, setFetching] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!hasValidPatientToken()) { router.replace("/client/portal/login"); return; }
-
-    void (async () => {
-      const res = await fetch(`${API}/public/schemes`);
-      if (res.ok) setSchemes((await res.json()) as Scheme[]);
-    })();
+    void fetch(`${API}/public/schemes`)
+      .then(async (r) => { if (r.ok) setSchemes((await r.json()) as Scheme[]); });
   }, [router]);
 
-  // Search procedures when scheme or search query changes
+  // Fetch procedures whenever scheme or condition changes
   useEffect(() => {
     if (!selectedScheme) { setProcedures([]); return; }
-    const timeout = setTimeout(() => {
-      setSearching(true);
-      const params = new URLSearchParams({ scheme: selectedScheme, limit: "30" });
-      if (search.trim()) params.set("q", search.trim());
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setFetching(true);
+      const params = new URLSearchParams({ scheme: selectedScheme, limit: "200" });
+      if (condition.trim()) params.set("q", condition.trim());
       void fetch(`${API}/patient/procedures?${params.toString()}`, {
         headers: getPatientAuthHeader(),
       }).then(async (res) => {
-        if (res.ok) setProcedures((await res.json()) as Procedure[]);
-        setSearching(false);
-      }).catch(() => setSearching(false));
-    }, 350);
-    return () => clearTimeout(timeout);
-  }, [selectedScheme, search]);
+        if (res.ok) {
+          const data = (await res.json()) as Procedure[];
+          setProcedures(data);
+          // Auto-expand first specialty
+          if (data.length > 0) {
+            const firstSpecialty = data[0].specialty ?? "General";
+            setExpandedSpecialties(new Set([firstSpecialty]));
+          }
+        }
+        setFetching(false);
+      }).catch(() => setFetching(false));
+    }, 400);
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  }, [selectedScheme, condition]);
+
+  const toggleSpecialty = (specialty: string) => {
+    setExpandedSpecialties((prev) => {
+      const next = new Set(prev);
+      if (next.has(specialty)) next.delete(specialty);
+      else next.add(specialty);
+      return next;
+    });
+  };
 
   const handleSubmit = async () => {
     if (!selectedScheme) { setError("Please select a scheme."); return; }
-    if (!selected) { setError("Please select a procedure/test from the list."); return; }
+    if (!selected) { setError("Please select a claim package."); return; }
     setError("");
     setLoading(true);
     try {
@@ -73,13 +100,13 @@ export default function BookTestPage() {
           specialty: selected.specialty,
           package_code: selected.package_code,
           procedure_name: selected.procedure_name ?? selected.package_name ?? "Unknown",
-          preferred_date: preferredDate || null,
+          preferred_date: null,
           notes: notes.trim() || null,
         }),
       });
       if (!res.ok) {
         const d = (await res.json()) as { detail?: string };
-        throw new Error(d.detail ?? "Booking failed");
+        throw new Error(d.detail ?? "Submission failed");
       }
       setSuccess(true);
     } catch (err) {
@@ -88,6 +115,9 @@ export default function BookTestPage() {
       setLoading(false);
     }
   };
+
+  const grouped = groupBySpecialty(procedures);
+  const specialties = Object.keys(grouped).sort();
 
   if (success) {
     return (
@@ -112,19 +142,19 @@ export default function BookTestPage() {
             marginBottom: "0.75rem",
           }}
         >
-          Booking Submitted
+          Claim Request Submitted
         </h2>
         <p style={{ color: "#8a9ab5", fontSize: "0.9375rem", marginBottom: "1.5rem" }}>
-          Your booking request has been received. Our team will review it and update the status
-          after SSO portal submission. You can track this in{" "}
+          Your request has been received. Our team will review the selected package and process it
+          through the SSO portal. You can track the status in{" "}
           <strong style={{ color: "#f8f6f0" }}>My Claims</strong>.
         </p>
         <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
           <button
-            onClick={() => { setSuccess(false); setSelected(null); setSearch(""); setNotes(""); setPreferredDate(""); }}
+            onClick={() => { setSuccess(false); setSelected(null); setCondition(""); setNotes(""); }}
             style={btnSecondary}
           >
-            Book Another
+            Find Another Claim
           </button>
           <button
             onClick={() => router.push("/client/portal/my-claims")}
@@ -139,8 +169,9 @@ export default function BookTestPage() {
 
   return (
     <div>
+      {/* Header */}
       <div style={{ marginBottom: "2rem" }}>
-        <div style={tagStyle}>◈ Book a Treatment</div>
+        <div style={tagStyle}>◈ Find My Claims</div>
         <h1
           style={{
             fontFamily: "var(--font-cormorant,'Cormorant Garamond',serif)",
@@ -151,206 +182,318 @@ export default function BookTestPage() {
             marginBottom: "0.5rem",
           }}
         >
-          Book a Test or Procedure
+          Find Available Claim Packages
         </h1>
-        <p style={{ color: "#8a9ab5", fontSize: "0.9rem" }}>
-          Select your insurance scheme, search for the procedure, and submit a booking request.
-          Our team will process it and update you with the SSO acknowledgement.
+        <p style={{ color: "#8a9ab5", fontSize: "0.9rem", maxWidth: "600px", lineHeight: 1.7 }}>
+          Tell us your insurance scheme and what treatment you are receiving. We will show you all
+          the matching claim packages available for you — select the one that fits your condition.
         </p>
       </div>
 
       <div
         style={{
-          background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.07)",
-          borderRadius: "16px",
-          padding: "2rem",
           display: "flex",
           flexDirection: "column",
           gap: "1.5rem",
         }}
       >
         {/* Step 1: Scheme */}
-        <div>
-          <SectionLabel step="1" label="Select Your Insurance Scheme" />
+        <div
+          style={{
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: "14px",
+            padding: "1.5rem",
+          }}
+        >
+          <StepLabel step="1" label="Select Your Insurance Scheme" />
           <select
             value={selectedScheme}
-            onChange={(e) => { setSelectedScheme(e.target.value); setSelected(null); setSearch(""); }}
-            style={{ ...inputStyle, width: "100%" }}
+            onChange={(e) => { setSelectedScheme(e.target.value); setSelected(null); setCondition(""); }}
+            style={{ ...inputStyle, width: "100%", maxWidth: "480px" }}
           >
-            <option value="">Choose scheme…</option>
+            <option value="">Choose your scheme…</option>
             {schemes.map((s) => (
               <option key={s.id} value={s.scheme}>{s.scheme}</option>
             ))}
           </select>
         </div>
 
-        {/* Step 2: Search procedures */}
+        {/* Step 2 + 3: Condition filter + Browse packages */}
         {selectedScheme && (
-          <div>
-            <SectionLabel step="2" label="Search for Procedure / Test" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => { setSearch(e.target.value); setSelected(null); }}
-              placeholder="Type procedure name, package code, or specialty…"
-              style={{ ...inputStyle, width: "100%", marginBottom: "0.75rem" }}
-            />
+          <div
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.07)",
+              borderRadius: "14px",
+              padding: "1.5rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "1.25rem",
+            }}
+          >
+            <StepLabel step="2" label="What treatment are you receiving?" />
+            <div>
+              <input
+                type="text"
+                value={condition}
+                onChange={(e) => { setCondition(e.target.value); setSelected(null); }}
+                placeholder="e.g. eye surgery, knee replacement, kidney stone, diabetes…"
+                style={{ ...inputStyle, width: "100%" }}
+              />
+              <p style={{ marginTop: "6px", fontSize: "0.775rem", color: "#2d3a4a" }}>
+                Type to filter · Leave blank to see all available packages
+              </p>
+            </div>
 
-            {/* Results list */}
-            {searching ? (
-              <div style={{ padding: "0.75rem", color: "#4a5a72", fontSize: "0.875rem" }}>Searching…</div>
-            ) : procedures.length === 0 && search ? (
-              <div style={{ padding: "0.75rem", color: "#4a5a72", fontSize: "0.875rem" }}>
-                No results for &ldquo;{search}&rdquo;
-              </div>
-            ) : (
-              <div
-                style={{
-                  maxHeight: "280px",
-                  overflowY: "auto",
-                  borderRadius: "8px",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                }}
-              >
-                {procedures.map((p, i) => {
-                  const isSelected =
-                    selected?.package_code === p.package_code &&
-                    selected?.procedure_name === p.procedure_name;
-                  return (
-                    <div
-                      key={i}
-                      onClick={() => setSelected(p)}
-                      style={{
-                        padding: "0.875rem 1rem",
-                        cursor: "pointer",
-                        borderBottom: "1px solid rgba(255,255,255,0.04)",
-                        background: isSelected
-                          ? "rgba(0,180,200,0.1)"
-                          : "transparent",
-                        borderLeft: isSelected
-                          ? "2px solid #00b4c8"
-                          : "2px solid transparent",
-                        transition: "background 0.15s",
-                      }}
-                    >
-                      <div style={{ fontSize: "0.9rem", fontWeight: 500, color: "#f8f6f0" }}>
-                        {p.procedure_name ?? p.package_name}
-                      </div>
-                      <div style={{ fontSize: "0.75rem", color: "#4a5a72", marginTop: "2px", display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-                        {p.specialty && <span>{p.specialty}</span>}
-                        {p.package_code && <span>Code: {p.package_code}</span>}
-                        {p.rate_primary && <span style={{ color: "#22c55e" }}>₹{p.rate_primary.toLocaleString()}</span>}
-                        {p.los && <span>LOS: {p.los} days</span>}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {selected && (
-              <div
-                style={{
-                  marginTop: "0.75rem",
-                  padding: "0.875rem 1rem",
-                  background: "rgba(0,180,200,0.06)",
-                  border: "1px solid rgba(0,180,200,0.2)",
-                  borderRadius: "8px",
-                  fontSize: "0.875rem",
-                  color: "#f8f6f0",
-                }}
-              >
-                <span style={{ color: "#00b4c8", fontWeight: 600 }}>Selected: </span>
-                {selected.procedure_name ?? selected.package_name}
-                {selected.rate_primary && (
-                  <span style={{ color: "#22c55e", marginLeft: "8px" }}>
-                    ₹{selected.rate_primary.toLocaleString()} (Tier 1)
+            {/* Package list */}
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.875rem" }}>
+                <StepLabel step="3" label="Select Your Claim Package" />
+                {procedures.length > 0 && (
+                  <span style={{ fontSize: "0.75rem", color: "#4a5a72" }}>
+                    {procedures.length} package{procedures.length !== 1 ? "s" : ""} found
                   </span>
                 )}
               </div>
-            )}
+
+              {fetching ? (
+                <div style={{ padding: "2rem", textAlign: "center", color: "#4a5a72", fontSize: "0.875rem" }}>
+                  Loading packages…
+                </div>
+              ) : procedures.length === 0 ? (
+                <div
+                  style={{
+                    padding: "2rem",
+                    textAlign: "center",
+                    color: "#4a5a72",
+                    fontSize: "0.875rem",
+                    border: "1px dashed rgba(255,255,255,0.08)",
+                    borderRadius: "10px",
+                  }}
+                >
+                  {condition ? `No packages found for "${condition}". Try a different term.` : "No packages available for this scheme."}
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  {specialties.map((specialty) => {
+                    const isOpen = expandedSpecialties.has(specialty);
+                    const items = grouped[specialty];
+                    return (
+                      <div
+                        key={specialty}
+                        style={{
+                          border: "1px solid rgba(255,255,255,0.07)",
+                          borderRadius: "10px",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {/* Specialty header */}
+                        <button
+                          onClick={() => toggleSpecialty(specialty)}
+                          style={{
+                            width: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            padding: "0.875rem 1rem",
+                            background: isOpen ? "rgba(0,180,200,0.05)" : "rgba(255,255,255,0.02)",
+                            border: "none",
+                            cursor: "pointer",
+                            color: isOpen ? "#00b4c8" : "#c8c0b0",
+                            transition: "all 0.2s",
+                            textAlign: "left",
+                          }}
+                        >
+                          <span style={{ fontWeight: 600, fontSize: "0.9rem" }}>
+                            {specialty}
+                          </span>
+                          <span style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.775rem", color: "#4a5a72" }}>
+                            {items.length} package{items.length !== 1 ? "s" : ""}
+                            <span style={{ fontSize: "0.875rem", color: isOpen ? "#00b4c8" : "#4a5a72" }}>
+                              {isOpen ? "▲" : "▼"}
+                            </span>
+                          </span>
+                        </button>
+
+                        {/* Package rows */}
+                        {isOpen && (
+                          <div>
+                            {items.map((p, i) => {
+                              const label = p.procedure_name ?? p.package_name ?? "Unknown";
+                              const isSelected =
+                                selected?.package_code === p.package_code &&
+                                selected?.procedure_name === p.procedure_name &&
+                                selected?.package_name === p.package_name;
+                              return (
+                                <div
+                                  key={i}
+                                  onClick={() => setSelected(p)}
+                                  style={{
+                                    padding: "0.875rem 1rem 0.875rem 1.25rem",
+                                    cursor: "pointer",
+                                    borderTop: "1px solid rgba(255,255,255,0.04)",
+                                    background: isSelected
+                                      ? "rgba(0,180,200,0.08)"
+                                      : "transparent",
+                                    borderLeft: isSelected
+                                      ? "3px solid #00b4c8"
+                                      : "3px solid transparent",
+                                    transition: "background 0.15s",
+                                    display: "flex",
+                                    alignItems: "flex-start",
+                                    justifyContent: "space-between",
+                                    gap: "1rem",
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    if (!isSelected)
+                                      (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.03)";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    if (!isSelected)
+                                      (e.currentTarget as HTMLElement).style.background = "transparent";
+                                  }}
+                                >
+                                  <div style={{ flex: 1 }}>
+                                    <div style={{ fontSize: "0.9rem", fontWeight: isSelected ? 600 : 400, color: isSelected ? "#f8f6f0" : "#c8c0b0" }}>
+                                      {label}
+                                    </div>
+                                    <div style={{ fontSize: "0.75rem", color: "#4a5a72", marginTop: "3px", display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+                                      {p.package_code && <span>Code: {p.package_code}</span>}
+                                      {p.los && <span>Stay: {p.los} days</span>}
+                                    </div>
+                                  </div>
+                                  {p.rate_primary && (
+                                    <div style={{ fontSize: "0.875rem", fontWeight: 600, color: "#22c55e", whiteSpace: "nowrap", flexShrink: 0 }}>
+                                      ₹{p.rate_primary.toLocaleString()}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
-        {/* Step 3: Preferred date + notes */}
+        {/* Step 4: Confirm + notes */}
         {selected && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            <SectionLabel step="3" label="Appointment Preference (Optional)" />
-            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-              <div style={{ flex: 1, minWidth: "200px" }}>
-                <label style={labelStyle}>Preferred Date</label>
-                <input
-                  type="date"
-                  value={preferredDate}
-                  onChange={(e) => setPreferredDate(e.target.value)}
-                  style={{ ...inputStyle, width: "100%" }}
-                />
+          <div
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(0,180,200,0.2)",
+              borderRadius: "14px",
+              padding: "1.5rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "1.25rem",
+            }}
+          >
+            <StepLabel step="4" label="Confirm and Submit" />
+
+            {/* Selected package summary */}
+            <div
+              style={{
+                background: "rgba(0,180,200,0.06)",
+                border: "1px solid rgba(0,180,200,0.2)",
+                borderRadius: "10px",
+                padding: "1rem 1.25rem",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                flexWrap: "wrap",
+                gap: "0.75rem",
+              }}
+            >
+              <div>
+                <div style={{ fontSize: "0.7rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "#00b4c8", marginBottom: "4px" }}>
+                  Selected Package
+                </div>
+                <div style={{ fontSize: "1rem", fontWeight: 600, color: "#f8f6f0" }}>
+                  {selected.procedure_name ?? selected.package_name}
+                </div>
+                <div style={{ fontSize: "0.8rem", color: "#4a5a72", marginTop: "2px" }}>
+                  {selected.specialty && <span>{selected.specialty} · </span>}
+                  {selected.package_code && <span>Code: {selected.package_code}</span>}
+                </div>
               </div>
+              {selected.rate_primary && (
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: "0.7rem", color: "#4a5a72", textTransform: "uppercase", letterSpacing: "0.06em" }}>Claim Rate</div>
+                  <div style={{ fontSize: "1.25rem", fontWeight: 700, color: "#22c55e" }}>
+                    ₹{selected.rate_primary.toLocaleString()}
+                  </div>
+                </div>
+              )}
             </div>
+
+            {/* Notes */}
             <div>
-              <label style={labelStyle}>Additional Notes</label>
+              <label style={labelStyle}>Additional Notes (Optional)</label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Describe your symptoms, urgency, or any other relevant information…"
+                placeholder="Add any additional information — symptoms, doctor's advice, ward details, etc."
                 rows={3}
                 style={{ ...inputStyle, width: "100%", resize: "vertical" as const }}
               />
             </div>
+
+            {error && (
+              <div
+                style={{
+                  background: "rgba(239,68,68,0.08)",
+                  border: "1px solid rgba(239,68,68,0.2)",
+                  borderRadius: "8px",
+                  padding: "0.75rem 1rem",
+                  fontSize: "0.875rem",
+                  color: "#f87171",
+                }}
+              >
+                {error}
+              </div>
+            )}
+
+            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+              <button
+                onClick={() => setSelected(null)}
+                style={{ ...btnSecondary, flex: "0 0 auto" }}
+              >
+                ← Change Package
+              </button>
+              <button
+                disabled={loading}
+                onClick={() => void handleSubmit()}
+                style={{
+                  ...btnPrimary,
+                  flex: 1,
+                  opacity: loading ? 0.6 : 1,
+                  cursor: loading ? "not-allowed" : "pointer",
+                }}
+              >
+                {loading ? "Submitting…" : "Submit Claim Request →"}
+              </button>
+            </div>
           </div>
         )}
-
-        {/* Error */}
-        {error && (
-          <div
-            style={{
-              background: "rgba(239,68,68,0.08)",
-              border: "1px solid rgba(239,68,68,0.2)",
-              borderRadius: "8px",
-              padding: "0.75rem 1rem",
-              fontSize: "0.875rem",
-              color: "#f87171",
-            }}
-          >
-            {error}
-          </div>
-        )}
-
-        {/* Submit */}
-        <button
-          disabled={loading || !selected}
-          onClick={() => void handleSubmit()}
-          style={{
-            padding: "1rem",
-            background:
-              loading || !selected
-                ? "rgba(0,180,200,0.25)"
-                : "linear-gradient(135deg,#00b4c8,#00d4eb)",
-            color: "#0a0f1e",
-            fontWeight: 700,
-            border: "none",
-            borderRadius: "8px",
-            fontSize: "1rem",
-            cursor: loading || !selected ? "not-allowed" : "pointer",
-            boxShadow: loading || !selected ? "none" : "0 0 24px rgba(0,180,200,0.25)",
-            transition: "all 0.3s ease",
-          }}
-        >
-          {loading ? "Submitting…" : "Submit Booking Request →"}
-        </button>
       </div>
     </div>
   );
 }
 
-function SectionLabel({ step, label }: { step: string; label: string }) {
+function StepLabel({ step, label }: { step: string; label: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "0.75rem" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "0.875rem" }}>
       <div
         style={{
-          width: "24px",
-          height: "24px",
+          width: "26px",
+          height: "26px",
           borderRadius: "50%",
           background: "rgba(0,180,200,0.15)",
           border: "1px solid rgba(0,180,200,0.35)",
@@ -365,7 +508,7 @@ function SectionLabel({ step, label }: { step: string; label: string }) {
       >
         {step}
       </div>
-      <span style={{ fontSize: "0.8125rem", fontWeight: 500, color: "#8a9ab5", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+      <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#8a9ab5", letterSpacing: "0.06em", textTransform: "uppercase" }}>
         {label}
       </span>
     </div>
@@ -399,7 +542,7 @@ const inputStyle: CSSProperties = {
 };
 
 const btnPrimary: CSSProperties = {
-  padding: "0.75rem 1.75rem",
+  padding: "0.875rem 1.75rem",
   background: "linear-gradient(135deg,#00b4c8,#00d4eb)",
   color: "#0a0f1e",
   fontWeight: 700,
@@ -411,7 +554,7 @@ const btnPrimary: CSSProperties = {
 };
 
 const btnSecondary: CSSProperties = {
-  padding: "0.75rem 1.75rem",
+  padding: "0.875rem 1.75rem",
   background: "transparent",
   color: "#f8f6f0",
   fontWeight: 500,

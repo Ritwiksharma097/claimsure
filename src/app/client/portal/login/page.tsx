@@ -12,7 +12,8 @@ const API = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v
 export default function PatientLoginPage() {
   const router = useRouter();
   const [patientId, setPatientId] = useState("");
-  const [mobile, setMobile] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPwd, setShowPwd] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -23,7 +24,7 @@ export default function PatientLoginPage() {
   const handleLogin = async () => {
     setError("");
     if (!patientId.trim()) { setError("Please enter your Patient ID."); return; }
-    if (!mobile.trim()) { setError("Please enter your mobile number."); return; }
+    if (!password) { setError("Please enter your password."); return; }
 
     setLoading(true);
     try {
@@ -32,7 +33,7 @@ export default function PatientLoginPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           patient_id: patientId.trim().toUpperCase(),
-          mobile: mobile.trim(),
+          password,
         }),
       });
       if (!res.ok) {
@@ -143,7 +144,7 @@ export default function PatientLoginPage() {
             Sign In to Your Portal
           </h1>
           <p style={{ fontSize: "0.875rem", color: "#4a5a72", marginBottom: "1.75rem" }}>
-            Use your Patient ID and registered mobile number. No password needed.
+            Enter your Patient ID and the password you chose at registration.
           </p>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -163,17 +164,42 @@ export default function PatientLoginPage() {
               </p>
             </div>
 
-            {/* Mobile */}
+            {/* Password */}
             <div>
-              <label style={labelStyle}>Registered Mobile Number</label>
-              <input
-                type="tel"
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
-                placeholder="10-digit number"
-                style={inputStyle}
-                onKeyDown={(e) => e.key === "Enter" && void handleLogin()}
-              />
+              <label style={labelStyle}>Password</label>
+              <div style={{ position: "relative" }}>
+                <input
+                  type={showPwd ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  style={{ ...inputStyle, paddingRight: "2.75rem" }}
+                  onKeyDown={(e) => e.key === "Enter" && void handleLogin()}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPwd(!showPwd)}
+                  style={{
+                    position: "absolute",
+                    right: "0.75rem",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "#4a5a72",
+                    fontSize: "1rem",
+                    padding: "0",
+                    lineHeight: 1,
+                    transition: "color 0.2s",
+                  }}
+                  onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "#00b4c8")}
+                  onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "#4a5a72")}
+                  aria-label={showPwd ? "Hide password" : "Show password"}
+                >
+                  {showPwd ? "🙈" : "👁️"}
+                </button>
+              </div>
             </div>
 
             {/* Error */}
@@ -230,7 +256,7 @@ export default function PatientLoginPage() {
           }}
         >
           <span>
-            Not registered yet?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/client/register" style={{ color: "#00b4c8", textDecoration: "none" }}>
               Register here
             </Link>

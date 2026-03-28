@@ -13,7 +13,7 @@ import {
 
 const portalLinks = [
   { href: "/client/portal",            label: "Dashboard", icon: "⊞" },
-  { href: "/client/portal/book-test",  label: "Book a Test", icon: "📋" },
+  { href: "/client/portal/book-test",  label: "Find My Claims", icon: "📋" },
   { href: "/client/portal/my-claims",  label: "My Claims", icon: "◈" },
   { href: "/client/portal/profile",    label: "Profile & Docs", icon: "♦" },
 ];

@@ -16,7 +16,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (hasValidToken()) router.replace("/");
+    if (hasValidToken()) router.replace("/dashboard");
   }, [router]);
 
   const handleLogin = async () => {
@@ -25,7 +25,7 @@ export default function LoginPage() {
       setError("");
       const token = await login(username, password);
       setToken(token.access_token);
-      router.push("/");
+      router.push("/dashboard");
     } catch (err) {
       if (err instanceof ApiError) setError(err.message);
       else setError("Login failed. Please check your credentials.");

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { CSSProperties } from "react";
 import { useState } from "react";
 
@@ -21,10 +22,18 @@ const SCHEMES = [
   "Other",
 ];
 
+const INVALID_MOBILES = new Set([
+  "1234567890","0123456789","9876543210","0000000000",
+  "1111111111","2222222222","3333333333","4444444444",
+  "5555555555","6666666666","7777777777","8888888888","9999999999",
+]);
+
 type FormData = {
   full_name: string;
   mobile: string;
   scheme: string;
+  password: string;
+  confirm_password: string;
   gender: string;
   dob: string;
   city: string;
@@ -37,6 +46,8 @@ const EMPTY: FormData = {
   full_name: "",
   mobile: "",
   scheme: "",
+  password: "",
+  confirm_password: "",
   gender: "",
   dob: "",
   city: "",
@@ -46,23 +57,38 @@ const EMPTY: FormData = {
 };
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [form, setForm] = useState<FormData>(EMPTY);
+  const [showPwd, setShowPwd] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState<{ patient_id: string; message: string } | null>(null);
 
-  const set = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
-    setForm((prev) => ({ ...prev, [field]: e.target.value }));
+  const set = (field: keyof FormData) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+      setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
     if (!form.full_name.trim()) { setError("Full name is required."); return; }
-    if (!form.mobile.trim() || form.mobile.replace(/\D/g, "").length < 10) {
-      setError("Please enter a valid 10-digit mobile number.");
-      return;
-    }
+
+    const mobileDigits = form.mobile.replace(/\D/g, "");
+    if (mobileDigits.length !== 10) { setError("Please enter a valid 10-digit mobile number."); return; }
+    if (!["6","7","8","9"].includes(mobileDigits[0])) { setError("Mobile number must start with 6, 7, 8, or 9."); return; }
+    if (INVALID_MOBILES.has(mobileDigits)) { setError("Please enter a real mobile number."); return; }
+
     if (!form.scheme) { setError("Please select your insurance scheme."); return; }
+
+    if (form.aadhaar_last4) {
+      const adDigits = form.aadhaar_last4.replace(/\D/g, "");
+      if (adDigits.length !== 4) { setError("Aadhaar last 4 digits must be exactly 4 numbers."); return; }
+    }
+
+    if (form.password.length < 8) { setError("Password must be at least 8 characters."); return; }
+    if (form.password !== form.confirm_password) { setError("Passwords do not match."); return; }
 
     setLoading(true);
     try {
@@ -71,12 +97,13 @@ export default function RegisterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           full_name: form.full_name.trim(),
-          mobile: form.mobile.trim(),
+          mobile: mobileDigits,
           scheme: form.scheme,
+          password: form.password,
           gender: form.gender || null,
           dob: form.dob || null,
           city: form.city.trim() || null,
-          aadhaar_last4: form.aadhaar_last4.trim() || null,
+          aadhaar_last4: form.aadhaar_last4.replace(/\D/g, "") || null,
           jan_aadhaar: form.jan_aadhaar.trim() || null,
           notes: form.notes.trim() || null,
         }),
@@ -114,14 +141,15 @@ export default function RegisterPage() {
               marginBottom: "0.75rem",
             }}
           >
-            Register for{" "}
+            Create Your{" "}
             <em style={{ color: "#00b4c8", fontStyle: "italic" }}>
-              Insurance Claims
+              Patient Account
             </em>
           </h1>
           <p style={{ color: "#8a9ab5", fontSize: "0.9375rem", lineHeight: 1.75 }}>
-            Fill in your details below and our claims team will get your case
-            started. All fields marked <span style={{ color: "#f87171" }}>*</span> are required.
+            Register once — then log in anytime to check your claims, book treatments,
+            and upload documents. Fields marked{" "}
+            <span style={{ color: "#f87171" }}>*</span> are required.
           </p>
         </div>
 
@@ -159,7 +187,7 @@ export default function RegisterPage() {
                 border: "1px solid rgba(0,180,200,0.3)",
                 borderRadius: "10px",
                 padding: "1.25rem",
-                marginBottom: "2rem",
+                marginBottom: "0.75rem",
                 display: "inline-block",
                 minWidth: "240px",
               }}
@@ -180,8 +208,8 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <p style={{ color: "#8a9ab5", fontSize: "0.8125rem", marginBottom: "1.75rem" }}>
-              Please save this ID — you will need it when you visit our facility or call our helpline.
+            <p style={{ color: "#8a9ab5", fontSize: "0.8125rem", marginBottom: "2rem" }}>
+              Save this ID — you will need it along with your password to log in.
             </p>
 
             <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
@@ -191,9 +219,12 @@ export default function RegisterPage() {
               >
                 Register Another
               </button>
-              <Link href="/client/contact" style={btnPrimaryStyle}>
-                Contact Us
-              </Link>
+              <button
+                onClick={() => router.push("/client/portal/login")}
+                style={btnPrimaryStyle}
+              >
+                Go to Login →
+              </button>
             </div>
           </div>
         ) : (
@@ -228,9 +259,13 @@ export default function RegisterPage() {
                   <input
                     type="tel"
                     value={form.mobile}
-                    onChange={set("mobile")}
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                      setForm((p) => ({ ...p, mobile: digits }));
+                    }}
                     placeholder="10-digit number"
                     maxLength={10}
+                    inputMode="numeric"
                     style={inputStyle}
                     required
                   />
@@ -283,9 +318,14 @@ export default function RegisterPage() {
                   <input
                     type="text"
                     value={form.aadhaar_last4}
-                    onChange={set("aadhaar_last4")}
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/\D/g, "").slice(0, 4);
+                      setForm((p) => ({ ...p, aadhaar_last4: digits }));
+                    }}
                     placeholder="XXXX"
                     maxLength={4}
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     style={inputStyle}
                   />
                 </Field>
@@ -299,6 +339,55 @@ export default function RegisterPage() {
                   />
                 </Field>
               </div>
+
+              {/* Section: Account Security */}
+              <SectionLabel>Account Password *</SectionLabel>
+
+              <div style={rowStyle}>
+                <Field label="Password *">
+                  <div style={{ position: "relative" }}>
+                    <input
+                      type={showPwd ? "text" : "password"}
+                      value={form.password}
+                      onChange={set("password")}
+                      placeholder="Min. 8 characters"
+                      style={{ ...inputStyle, paddingRight: "2.75rem" }}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPwd(!showPwd)}
+                      style={eyeBtnStyle}
+                      aria-label={showPwd ? "Hide password" : "Show password"}
+                    >
+                      {showPwd ? "🙈" : "👁️"}
+                    </button>
+                  </div>
+                </Field>
+                <Field label="Confirm Password *">
+                  <div style={{ position: "relative" }}>
+                    <input
+                      type={showConfirm ? "text" : "password"}
+                      value={form.confirm_password}
+                      onChange={set("confirm_password")}
+                      placeholder="Re-enter password"
+                      style={{ ...inputStyle, paddingRight: "2.75rem" }}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirm(!showConfirm)}
+                      style={eyeBtnStyle}
+                      aria-label={showConfirm ? "Hide password" : "Show password"}
+                    >
+                      {showConfirm ? "🙈" : "👁️"}
+                    </button>
+                  </div>
+                </Field>
+              </div>
+              <p style={{ fontSize: "0.78rem", color: "#4a5a72", marginTop: "-0.5rem" }}>
+                You will use your Patient ID + this password to log in every time.
+              </p>
 
               {/* Section: Additional */}
               <SectionLabel>Additional Details</SectionLabel>
@@ -350,13 +439,13 @@ export default function RegisterPage() {
                   transition: "all 0.3s ease",
                 }}
               >
-                {loading ? "Submitting…" : "Submit Registration →"}
+                {loading ? "Creating Account…" : "Create My Account →"}
               </button>
 
               <p style={{ textAlign: "center", fontSize: "0.8125rem", color: "#4a5a72", margin: 0 }}>
-                Already registered?{" "}
-                <Link href="/client/contact" style={{ color: "#00b4c8", textDecoration: "none" }}>
-                  Contact our helpdesk
+                Already have an account?{" "}
+                <Link href="/client/portal/login" style={{ color: "#00b4c8", textDecoration: "none" }}>
+                  Sign in here
                 </Link>
               </p>
             </div>
@@ -429,6 +518,20 @@ const inputStyle: CSSProperties = {
   fontSize: "0.9375rem",
 };
 
+const eyeBtnStyle: CSSProperties = {
+  position: "absolute",
+  right: "0.75rem",
+  top: "50%",
+  transform: "translateY(-50%)",
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  color: "#4a5a72",
+  fontSize: "1rem",
+  padding: "0",
+  lineHeight: 1,
+};
+
 const rowStyle: CSSProperties = {
   display: "flex",
   gap: "1rem",
@@ -447,7 +550,6 @@ const btnPrimaryStyle: CSSProperties = {
   border: "none",
   cursor: "pointer",
   fontSize: "0.9375rem",
-  textDecoration: "none",
   boxShadow: "0 0 24px rgba(0,180,200,0.25)",
 };
 

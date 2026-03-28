@@ -140,32 +140,6 @@ export function Navbar() {
               Register
             </Link>
           </li>
-          <li>
-            <Link
-              href="/login"
-              style={{
-                padding: "0.5rem 1.5rem",
-                border: "1px solid rgba(255,255,255,0.15)",
-                color: "#9aabb8",
-                borderRadius: "4px",
-                textDecoration: "none",
-                fontSize: "0.875rem",
-                letterSpacing: "0.04em",
-                textTransform: "uppercase",
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.3)";
-                (e.currentTarget as HTMLElement).style.color = "#f8f6f0";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.15)";
-                (e.currentTarget as HTMLElement).style.color = "#9aabb8";
-              }}
-            >
-              Staff Login
-            </Link>
-          </li>
         </ul>
 
         {/* Mobile toggle */}
@@ -245,23 +219,6 @@ export function Navbar() {
             }}
           >
             Register Now
-          </Link>
-          <Link
-            href="/login"
-            onClick={() => setMobileOpen(false)}
-            style={{
-              display: "block",
-              marginTop: "0.75rem",
-              padding: "0.875rem 1.5rem",
-              border: "1px solid rgba(255,255,255,0.12)",
-              color: "#9aabb8",
-              borderRadius: "4px",
-              textDecoration: "none",
-              textAlign: "center",
-              fontSize: "0.9375rem",
-            }}
-          >
-            Staff Login
           </Link>
         </div>
       )}

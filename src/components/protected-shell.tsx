@@ -7,7 +7,7 @@ import { useState } from "react";
 import { clearToken } from "@/lib/auth";
 
 const navItems = [
-  { href: "/",              label: "Dashboard",      icon: "⊞" },
+  { href: "/dashboard",     label: "Dashboard",      icon: "⊞" },
   { href: "/explorer",      label: "Master Explorer", icon: "◎" },
   { href: "/claimdesk",     label: "Claim Desk",      icon: "✦" },
   { href: "/patients",      label: "Patients",        icon: "♦" },
