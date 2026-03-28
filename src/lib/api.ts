@@ -165,6 +165,7 @@ export async function fetchMasterRecords(params: {
   specialty?: string;
   q?: string;
   limit?: number;
+  offset?: number;
 }) {
   const res = await fetch(
     buildUrl("/masters/records", {
@@ -172,12 +173,13 @@ export async function fetchMasterRecords(params: {
       recordType: params.recordType,
       specialty: params.specialty,
       q: params.q,
-      limit: params.limit || 100,
+      limit: params.limit || 50,
+      offset: params.offset || 0,
     }),
     { cache: "no-store", headers: { ...getAuthHeader() } }
   );
   if (!res.ok) throw new ApiError("Failed to fetch records", res.status);
-  return (await res.json()) as MasterRecord[];
+  return (await res.json()) as { items: MasterRecord[]; total: number };
 }
 
 export async function fetchClaimChecklist(payload: {
