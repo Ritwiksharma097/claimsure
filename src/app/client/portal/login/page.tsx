@@ -11,7 +11,7 @@ const API = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v
 
 export default function PatientLoginPage() {
   const router = useRouter();
-  const [patientId, setPatientId] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   const [error, setError] = useState("");
@@ -23,7 +23,7 @@ export default function PatientLoginPage() {
 
   const handleLogin = async () => {
     setError("");
-    if (!patientId.trim()) { setError("Please enter your Patient ID."); return; }
+    if (!username.trim()) { setError("Please enter your username."); return; }
     if (!password) { setError("Please enter your password."); return; }
 
     setLoading(true);
@@ -32,7 +32,7 @@ export default function PatientLoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          patient_id: patientId.trim().toUpperCase(),
+          username: username.trim().toLowerCase(),
           password,
         }),
       });
@@ -144,24 +144,22 @@ export default function PatientLoginPage() {
             Sign In to Your Portal
           </h1>
           <p style={{ fontSize: "0.875rem", color: "#4a5a72", marginBottom: "1.75rem" }}>
-            Enter your Patient ID and the password you chose at registration.
+            Enter the username and password you chose at registration.
           </p>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            {/* Patient ID */}
+            {/* Username */}
             <div>
-              <label style={labelStyle}>Patient ID</label>
+              <label style={labelStyle}>Username</label>
               <input
                 type="text"
-                value={patientId}
-                onChange={(e) => setPatientId(e.target.value.toUpperCase())}
-                placeholder="e.g. RAHULM91800000"
-                style={{ ...inputStyle, fontFamily: "monospace", letterSpacing: "0.06em" }}
+                value={username}
+                onChange={(e) => setUsername(e.target.value.toLowerCase())}
+                placeholder="e.g. rahul.sharma"
+                style={inputStyle}
                 onKeyDown={(e) => e.key === "Enter" && void handleLogin()}
+                autoComplete="username"
               />
-              <p style={{ marginTop: "4px", fontSize: "0.7rem", color: "#2d3a4a" }}>
-                Found on your registration confirmation
-              </p>
             </div>
 
             {/* Password */}

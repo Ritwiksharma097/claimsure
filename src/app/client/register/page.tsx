@@ -30,6 +30,7 @@ const INVALID_MOBILES = new Set([
 
 type FormData = {
   full_name: string;
+  username: string;
   mobile: string;
   scheme: string;
   password: string;
@@ -44,6 +45,7 @@ type FormData = {
 
 const EMPTY: FormData = {
   full_name: "",
+  username: "",
   mobile: "",
   scheme: "",
   password: "",
@@ -75,6 +77,10 @@ export default function RegisterPage() {
 
     if (!form.full_name.trim()) { setError("Full name is required."); return; }
 
+    const uname = form.username.trim().toLowerCase();
+    if (uname.length < 3) { setError("Username must be at least 3 characters."); return; }
+    if (!/^[a-z0-9._]+$/.test(uname)) { setError("Username can only contain letters, numbers, dots and underscores."); return; }
+
     const mobileDigits = form.mobile.replace(/\D/g, "");
     if (mobileDigits.length !== 10) { setError("Please enter a valid 10-digit mobile number."); return; }
     if (!["6","7","8","9"].includes(mobileDigits[0])) { setError("Mobile number must start with 6, 7, 8, or 9."); return; }
@@ -97,6 +103,7 @@ export default function RegisterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           full_name: form.full_name.trim(),
+          username: uname,
           mobile: mobileDigits,
           scheme: form.scheme,
           password: form.password,
@@ -209,7 +216,8 @@ export default function RegisterPage() {
             </div>
 
             <p style={{ color: "#8a9ab5", fontSize: "0.8125rem", marginBottom: "2rem" }}>
-              Save this ID — you will need it along with your password to log in.
+              Log in anytime using your <strong style={{ color: "#f8f6f0" }}>username</strong> and password.
+              Keep your Patient ID for reference when visiting the hospital.
             </p>
 
             <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
@@ -255,6 +263,26 @@ export default function RegisterPage() {
                     required
                   />
                 </Field>
+                <Field label="Username *">
+                  <input
+                    type="text"
+                    value={form.username}
+                    onChange={(e) => {
+                      const v = e.target.value.toLowerCase().replace(/[^a-z0-9._]/g, "");
+                      setForm((p) => ({ ...p, username: v }));
+                    }}
+                    placeholder="e.g. rahul.sharma"
+                    maxLength={40}
+                    style={inputStyle}
+                    required
+                  />
+                  <span style={{ fontSize: "0.72rem", color: "#4a5a72", marginTop: "3px" }}>
+                    Letters, numbers, dots &amp; underscores only
+                  </span>
+                </Field>
+              </div>
+
+              <div style={rowStyle}>
                 <Field label="Mobile Number *">
                   <input
                     type="tel"
