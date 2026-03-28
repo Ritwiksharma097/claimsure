@@ -1,19 +1,22 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { hasValidToken } from "@/lib/auth";
 
 export function useAuthGuard() {
   const router = useRouter();
-  const ready = hasValidToken();
+  // Start as false — only check localStorage after mount (client-side only)
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (!ready) {
+    if (!hasValidToken()) {
       router.replace("/admin");
+    } else {
+      setReady(true);
     }
-  }, [ready, router]);
+  }, [router]);
 
   return { ready };
 }

@@ -42,14 +42,17 @@ export default function ExplorerPage() {
       try {
         setLoading(true);
         setError("");
-        setRecords(await fetchMasterRecords({ scheme: scheme || undefined, q: query || undefined, limit: 100 }));
+        setRecords(await fetchMasterRecords({ scheme: scheme || undefined, q: query || undefined, limit: 5000 }));
       } catch (err) {
         if (err instanceof ApiError && err.status === 401) {
           clearToken();
           router.replace("/admin");
           return;
         }
-        setError("Failed to load records");
+        const detail = err instanceof ApiError
+          ? `API error ${err.status}: ${err.message}`
+          : err instanceof Error ? err.message : "Unknown error";
+        setError(`Failed to load records — ${detail}`);
       } finally {
         setLoading(false);
       }
@@ -57,7 +60,7 @@ export default function ExplorerPage() {
     void run();
   }, [ready, router, scheme, query]);
 
-  const shown = useMemo(() => records.slice(0, 100), [records]);
+  const shown = useMemo(() => records, [records]);
   if (!ready) return null;
 
   return (
