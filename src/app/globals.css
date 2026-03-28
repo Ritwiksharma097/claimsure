@@ -119,9 +119,62 @@ td {
 }
 tr:hover td { background: rgba(0,180,200,0.04); }
 
-/* Responsive two-column grids */
+/* ── Responsive two-column grids ── */
 @media (max-width: 768px) {
-  .about-grid, .how-grid {
+  /* Client page grids */
+  .about-grid,
+  .how-grid,
+  .hero-grid {
     grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+
+  /* Show hero image on mobile but smaller */
+  .hero-image-col {
+    display: block !important;
+  }
+
+  /* Contact form first/last name row → single column */
+  .contact-name-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Admin sidebar always slides in on mobile — ensure it never shows by default */
+  /* (handled via JS state, this just ensures content fills correctly) */
+  .admin-content {
+    margin-left: 0 !important;
+  }
+
+  /* Tables scroll horizontally on small screens */
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Reduce section padding on mobile */
+  section {
+    padding-top: 4rem !important;
+    padding-bottom: 4rem !important;
+  }
+
+  /* Footer flex direction */
+  .footer-grid {
+    flex-direction: column !important;
+    gap: 2rem !important;
+  }
+
+  /* Portal layout header sign-out text */
+  .portal-signout-label {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small phones */
+  .hero-grid {
+    padding-top: 1rem !important;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr 1fr !important;
   }
 }

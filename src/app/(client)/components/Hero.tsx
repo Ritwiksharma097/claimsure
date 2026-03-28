@@ -337,11 +337,11 @@ export function Hero() {
           to   { opacity: 1; transform: translateY(0);    }
         }
         @media (max-width: 768px) {
-          .hero-grid {
-            grid-template-columns: 1fr !important;
-            gap: 2rem !important;
-          }
           .hero-image-col {
+            order: -1;
+          }
+          .hero-image-col > div:last-child,
+          .hero-image-col > div:nth-child(3) {
             display: none !important;
           }
         }
