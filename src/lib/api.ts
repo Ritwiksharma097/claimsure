@@ -50,7 +50,12 @@ export type MasterRecord = {
   package_name?: string | null;
   procedure_code?: string | null;
   procedure_name?: string | null;
+  rate_primary?: string | number | null;
+  rate_secondary?: string | number | null;
+  rate_tertiary?: string | number | null;
   notes?: string | null;
+  los?: string | null;
+  source?: string | null;
 };
 
 export type ChecklistResult = {
