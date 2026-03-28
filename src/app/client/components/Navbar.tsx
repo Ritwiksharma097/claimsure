@@ -63,7 +63,7 @@ export function Navbar() {
               fontSize: "1.5rem", fontWeight: 600, color: "#f8f6f0",
             }}
           >
-            Claim<span style={{ color: "#00b4c8" }}>Bridge</span>
+            Claim<span style={{ color: "#00b4c8" }}>Sure</span>
           </span>
         </Link>
 
@@ -97,11 +97,56 @@ export function Navbar() {
           })}
           <li>
             <Link
+              href="/client/portal"
+              style={{
+                padding: "0.5rem 1.5rem",
+                border: "1px solid rgba(0,180,200,0.4)",
+                color: "#00b4c8",
+                borderRadius: "4px",
+                textDecoration: "none",
+                fontSize: "0.875rem",
+                fontWeight: 500,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                transition: "all 0.3s ease",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "rgba(0,180,200,0.08)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "transparent";
+              }}
+            >
+              My Portal
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/client/register"
+              style={{
+                padding: "0.5rem 1.5rem",
+                background: "linear-gradient(135deg,#00b4c8,#00d4eb)",
+                color: "#0a0f1e",
+                borderRadius: "4px",
+                textDecoration: "none",
+                fontSize: "0.875rem",
+                fontWeight: 700,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                transition: "all 0.3s ease",
+                boxShadow: "0 0 16px rgba(0,180,200,0.2)",
+              }}
+            >
+              Register
+            </Link>
+          </li>
+          <li>
+            <Link
               href="/login"
               style={{
                 padding: "0.5rem 1.5rem",
-                border: "1px solid #00b4c8",
-                color: "#00b4c8",
+                border: "1px solid rgba(255,255,255,0.15)",
+                color: "#9aabb8",
                 borderRadius: "4px",
                 textDecoration: "none",
                 fontSize: "0.875rem",
@@ -110,12 +155,12 @@ export function Navbar() {
                 transition: "all 0.3s ease",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.background = "#00b4c8";
-                (e.currentTarget as HTMLElement).style.color = "#0a0f1e";
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.3)";
+                (e.currentTarget as HTMLElement).style.color = "#f8f6f0";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.background = "transparent";
-                (e.currentTarget as HTMLElement).style.color = "#00b4c8";
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.15)";
+                (e.currentTarget as HTMLElement).style.color = "#9aabb8";
               }}
             >
               Staff Login
@@ -166,17 +211,52 @@ export function Navbar() {
             </Link>
           ))}
           <Link
-            href="/login"
+            href="/client/portal"
             onClick={() => setMobileOpen(false)}
             style={{
               display: "block",
               marginTop: "1.25rem",
+              padding: "0.875rem 1.5rem",
+              border: "1px solid rgba(0,180,200,0.4)",
+              color: "#00b4c8",
+              borderRadius: "4px",
+              textDecoration: "none",
+              textAlign: "center",
+              fontSize: "0.9375rem",
+              fontWeight: 500,
+            }}
+          >
+            My Portal
+          </Link>
+          <Link
+            href="/client/register"
+            onClick={() => setMobileOpen(false)}
+            style={{
+              display: "block",
+              marginTop: "0.75rem",
               padding: "0.875rem 1.5rem",
               background: "linear-gradient(135deg,#00b4c8,#00d4eb)",
               color: "#0a0f1e",
               borderRadius: "4px",
               textDecoration: "none",
               fontWeight: 700,
+              textAlign: "center",
+              fontSize: "0.9375rem",
+            }}
+          >
+            Register Now
+          </Link>
+          <Link
+            href="/login"
+            onClick={() => setMobileOpen(false)}
+            style={{
+              display: "block",
+              marginTop: "0.75rem",
+              padding: "0.875rem 1.5rem",
+              border: "1px solid rgba(255,255,255,0.12)",
+              color: "#9aabb8",
+              borderRadius: "4px",
+              textDecoration: "none",
               textAlign: "center",
               fontSize: "0.9375rem",
             }}

@@ -7,8 +7,9 @@ const quickLinks = [
     href: "/client/about",
     icon: "🏥",
     title: "About Us",
-    desc: "Learn how ClaimBridge was built by claims specialists with a decade of real hospital experience.",
+    desc: "Learn how ClaimSure was built by claims specialists with a decade of real hospital experience.",
     accent: "#00b4c8",
+    cta: "Learn more →",
   },
   {
     href: "/client/services",
@@ -16,6 +17,15 @@ const quickLinks = [
     title: "Our Services",
     desc: "Pre-auth, cashless processing, patient records, compliance audits, analytics, and insurer liaison.",
     accent: "#c9a84c",
+    cta: "View services →",
+  },
+  {
+    href: "/client/register",
+    icon: "📝",
+    title: "Patient Register",
+    desc: "Register yourself or a family member for insurance claims. Takes less than 2 minutes.",
+    accent: "#00d4eb",
+    cta: "Register now →",
   },
   {
     href: "/client/how-it-works",
@@ -23,6 +33,7 @@ const quickLinks = [
     title: "How It Works",
     desc: "Four simple steps from patient onboarding to final settlement reconciliation.",
     accent: "#00b4c8",
+    cta: "See process →",
   },
   {
     href: "/client/contact",
@@ -30,6 +41,7 @@ const quickLinks = [
     title: "Get in Touch",
     desc: "Ready to transform your claims process? Request a demo in under 30 minutes.",
     accent: "#c9a84c",
+    cta: "Contact us →",
   },
 ];
 
@@ -45,7 +57,7 @@ export function QuickLinks() {
               textTransform: "uppercase", color: "#00b4c8", marginBottom: "1rem",
             }}
           >
-            <span>◈</span> Explore ClaimBridge
+            <span>◈</span> Explore ClaimSure
           </div>
           <h2
             style={{
@@ -112,7 +124,7 @@ export function QuickLinks() {
                   {item.desc}
                 </p>
                 <div style={{ marginTop: "1.25rem", fontSize: "0.8125rem", color: item.accent, letterSpacing: "0.04em" }}>
-                  Learn more →
+                  {item.cta}
                 </div>
               </div>
             </Link>

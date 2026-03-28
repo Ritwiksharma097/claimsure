@@ -1,9 +1,9 @@
 import { About } from "../components/About";
 
 export const metadata = {
-  title: "About — ClaimBridge",
+  title: "About — ClaimSure",
   description:
-    "Learn how ClaimBridge was built by claims specialists with a decade of real hospital experience across Rajasthan.",
+    "Learn how ClaimSure was built by claims specialists with a decade of real hospital experience across Rajasthan.",
 };
 
 export default function AboutPage() {
@@ -35,7 +35,7 @@ export default function AboutPage() {
             fontWeight: 600, color: "#f8f6f0", lineHeight: 1.1,
           }}
         >
-          About <em style={{ color: "#00b4c8", fontStyle: "italic" }}>ClaimBridge</em>
+          About <em style={{ color: "#00b4c8", fontStyle: "italic" }}>ClaimSure</em>
         </h1>
         <p
           style={{

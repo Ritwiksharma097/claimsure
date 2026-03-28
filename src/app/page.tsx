@@ -96,7 +96,7 @@ export default function HomePage() {
             marginBottom: "0.5rem",
           }}
         >
-          Welcome to ClaimBridge
+          Welcome to ClaimSure
         </h2>
         <p style={{ color: "#6b7a94", fontSize: "0.9375rem", maxWidth: "560px" }}>
           Select a module below to begin. All data is saved to your PostgreSQL

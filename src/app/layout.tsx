@@ -22,7 +22,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ClaimBridge — Intelligent Claims Management",
+  title: "ClaimSure — Intelligent Claims Management",
   description:
     "India's intelligent health insurance claims management platform — built for hospitals, TPAs, and healthcare networks.",
 };

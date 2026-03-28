@@ -1,9 +1,9 @@
 import { Contact } from "../components/Contact";
 
 export const metadata = {
-  title: "Contact — ClaimBridge",
+  title: "Contact — ClaimSure",
   description:
-    "Request a demo and see how ClaimBridge transforms your claims process in under 30 minutes.",
+    "Request a demo and see how ClaimSure transforms your claims process in under 30 minutes.",
 };
 
 export default function ContactPage() {

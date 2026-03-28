@@ -150,7 +150,7 @@ export function Hero() {
             animation: "fadeUp 0.7s ease 0.3s forwards",
           }}
         >
-          ClaimBridge is India&apos;s intelligent health insurance claims
+          ClaimSure is India&apos;s intelligent health insurance claims
           management platform — built for hospitals, TPAs, and healthcare
           networks who demand zero errors and faster settlements.
         </p>

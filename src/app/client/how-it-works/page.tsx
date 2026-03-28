@@ -3,9 +3,9 @@ import { StatsBand }  from "../components/StatsBand";
 import Link           from "next/link";
 
 export const metadata = {
-  title: "How It Works — ClaimBridge",
+  title: "How It Works — ClaimSure",
   description:
-    "Four simple steps from patient onboarding to final settlement reconciliation with ClaimBridge.",
+    "Four simple steps from patient onboarding to final settlement reconciliation with ClaimSure.",
 };
 
 export default function HowItWorksPage() {
@@ -38,7 +38,7 @@ export default function HowItWorksPage() {
           }}
         >
           How{" "}
-          <em style={{ color: "#00b4c8", fontStyle: "italic" }}>ClaimBridge</em>{" "}
+          <em style={{ color: "#00b4c8", fontStyle: "italic" }}>ClaimSure</em>{" "}
           Works
         </h1>
         <p
@@ -48,7 +48,7 @@ export default function HowItWorksPage() {
           }}
         >
           From the moment a patient walks in to the final settlement hitting your
-          bank account — ClaimBridge manages every step of the journey.
+          bank account — ClaimSure manages every step of the journey.
         </p>
       </div>
 

@@ -2,7 +2,7 @@ import { Services } from "../components/Services";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Services — ClaimBridge",
+  title: "Services — ClaimSure",
   description:
     "Pre-authorization, cashless claims processing, patient records, compliance audits, analytics, and insurer liaison services.",
 };

@@ -1,4 +1,4 @@
-const TOKEN_KEY = "claimbridgeToken";
+const TOKEN_KEY = "ClaimSureToken";
 
 function parseJwtPayload(token: string): { exp?: number } | null {
   try {

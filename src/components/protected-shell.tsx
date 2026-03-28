@@ -95,7 +95,7 @@ export function ProtectedShell({
                 lineHeight: 1.1,
               }}
             >
-              Claim<span style={{ color: "#00b4c8" }}>Bridge</span>
+              Claim<span style={{ color: "#00b4c8" }}>Sure</span>
             </div>
             <div
               style={{
@@ -284,7 +284,7 @@ export function ProtectedShell({
                 textTransform: "uppercase",
               }}
             >
-              ClaimBridge Operations
+              ClaimSure Operations
             </p>
           </div>
 

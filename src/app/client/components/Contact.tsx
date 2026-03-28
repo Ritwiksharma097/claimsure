@@ -83,7 +83,7 @@ export function Contact() {
             }}
           >
             Whether you&apos;re a hospital network, a standalone facility, or a
-            TPA looking for a better system — ClaimBridge adapts to your
+            TPA looking for a better system — ClaimSure adapts to your
             workflow. Request a demo and see the difference in under 30
             minutes.
           </p>

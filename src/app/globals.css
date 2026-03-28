@@ -118,3 +118,10 @@ td {
   color: var(--cream-2);
 }
 tr:hover td { background: rgba(0,180,200,0.04); }
+
+/* Responsive two-column grids */
+@media (max-width: 768px) {
+  .about-grid, .how-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

@@ -55,7 +55,7 @@ export function Footer() {
                 color: "#f8f6f0",
               }}
             >
-              Claim<span style={{ color: "#00b4c8" }}>Bridge</span>
+              Claim<span style={{ color: "#00b4c8" }}>Sure</span>
             </span>
           </div>
           <p
@@ -74,22 +74,17 @@ export function Footer() {
         <div style={{ display: "flex", gap: "4rem", flexWrap: "wrap" }}>
           <div>
             <div style={colHead}>Platform</div>
-            {[
-              { label: "About",        href: "#about"    },
-              { label: "Services",     href: "#services" },
-              { label: "How It Works", href: "#how"      },
-              { label: "Contact",      href: "#contact"  },
-            ].map((l) => (
-              <a key={l.label} href={l.href} style={colLink}>
-                {l.label}
-              </a>
-            ))}
+            <Link href="/client/about" style={colLink}>About</Link>
+            <Link href="/client/services" style={colLink}>Services</Link>
+            <Link href="/client/how-it-works" style={colLink}>How It Works</Link>
+            <Link href="/client/contact" style={colLink}>Contact</Link>
           </div>
 
           <div>
             <div style={colHead}>Access</div>
+            <Link href="/client/register" style={colLink}>Patient Register</Link>
             <Link href="/login" style={colLink}>Staff Login</Link>
-            <a href="#contact" style={colLink}>Request Demo</a>
+            <Link href="/client/contact" style={colLink}>Request Demo</Link>
           </div>
 
           <div>
@@ -116,7 +111,7 @@ export function Footer() {
         }}
       >
         <p style={{ fontSize: "0.8125rem", color: "#232d3a", margin: 0 }}>
-          © 2025 ClaimBridge. All rights reserved.
+          © 2025 ClaimSure. All rights reserved.
         </p>
         <p style={{ fontSize: "0.8125rem", color: "#232d3a", margin: 0 }}>
           Built for healthcare professionals across Rajasthan &amp; beyond.
