@@ -8,7 +8,7 @@ import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { ApiError, fetchMasterRecords, fetchSchemes, MasterRecord, Scheme } from "@/lib/api";
 import { clearToken } from "@/lib/auth";
 
-const PAGE_SIZE = 50;
+const PAGE_SIZE = 100;
 
 function buildPageNumbers(current: number, total: number): (number | "…")[] {
   if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);

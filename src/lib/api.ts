@@ -173,7 +173,7 @@ export async function fetchMasterRecords(params: {
       recordType: params.recordType,
       specialty: params.specialty,
       q: params.q,
-      limit: params.limit || 50,
+      limit: params.limit || 100,
       offset: params.offset || 0,
     }),
     { cache: "no-store", headers: { ...getAuthHeader() } }
