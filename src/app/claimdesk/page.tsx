@@ -32,7 +32,7 @@ export default function ClaimDeskPage() {
       } catch (err) {
         if (err instanceof ApiError && err.status === 401) {
           clearToken();
-          router.replace("/login");
+          router.replace("/admin");
           return;
         }
         setError("Failed to load schemes");
@@ -85,7 +85,7 @@ export default function ClaimDeskPage() {
       } catch (err) {
         if (err instanceof ApiError && err.status === 401) {
           clearToken();
-          router.replace("/login");
+          router.replace("/admin");
           return;
         }
         setError("Failed to compute checklist");

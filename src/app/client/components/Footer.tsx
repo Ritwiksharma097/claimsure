@@ -83,7 +83,7 @@ export function Footer() {
           <div>
             <div style={colHead}>Access</div>
             <Link href="/client/register" style={colLink}>Patient Register</Link>
-            <Link href="/login" style={colLink}>Staff Login</Link>
+            <Link href="/client/portal/login" style={colLink}>Patient Login</Link>
             <Link href="/client/contact" style={colLink}>Request Demo</Link>
           </div>
 

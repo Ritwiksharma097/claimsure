@@ -28,7 +28,7 @@ export function ProtectedShell({
 
   const handleLogout = () => {
     clearToken();
-    router.push("/login");
+    router.push("/admin");
   };
 
   return (

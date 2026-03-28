@@ -43,7 +43,7 @@ export default function AdminUpdatesPage() {
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) {
         clearToken();
-        router.replace("/login");
+        router.replace("/admin");
         return;
       }
       if (err instanceof ApiError && err.status === 403) {

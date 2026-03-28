@@ -53,26 +53,12 @@ export function Services() {
       }}
     >
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        {/* Header */}
-        <Reveal>
-          <div style={token.sectionTag}>
-            <span>◈</span> What We Do
-          </div>
-          <h2 style={token.sectionTitle}>
-            A Complete{" "}
-            <em style={{ color: "#00b4c8", fontStyle: "italic" }}>
-              Claims Ecosystem
-            </em>
-          </h2>
-        </Reveal>
-
         {/* Grid */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
             gap: "1.5rem",
-            marginTop: "3rem",
           }}
         >
           {services.map((svc, i) => (

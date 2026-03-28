@@ -203,18 +203,30 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
           <button
             onClick={handleLogout}
             style={{
-              padding: "0.375rem 0.875rem",
-              background: "transparent",
-              border: "1px solid rgba(239,68,68,0.25)",
+              padding: "0.5rem 1.1rem",
+              background: "rgba(239,68,68,0.12)",
+              border: "1px solid rgba(239,68,68,0.55)",
               color: "#f87171",
               borderRadius: "6px",
-              fontSize: "0.75rem",
+              fontSize: "0.8125rem",
+              fontWeight: 600,
               cursor: "pointer",
-              letterSpacing: "0.04em",
+              letterSpacing: "0.03em",
               transition: "all 0.2s",
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.background = "rgba(239,68,68,0.22)";
+              (e.currentTarget as HTMLElement).style.borderColor = "rgba(239,68,68,0.85)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.background = "rgba(239,68,68,0.12)";
+              (e.currentTarget as HTMLElement).style.borderColor = "rgba(239,68,68,0.55)";
             }}
           >
-            Sign Out
+            <span>⇥</span> Sign Out
           </button>
         </div>
       </header>
@@ -276,6 +288,27 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
               {l.label}
             </Link>
           ))}
+          <button
+            onClick={() => { setMobileOpen(false); handleLogout(); }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              width: "100%",
+              marginTop: "0.75rem",
+              padding: "0.875rem 1rem",
+              background: "rgba(239,68,68,0.1)",
+              border: "1px solid rgba(239,68,68,0.4)",
+              borderRadius: "8px",
+              color: "#f87171",
+              fontSize: "0.9375rem",
+              fontWeight: 600,
+              cursor: "pointer",
+              textAlign: "left",
+            }}
+          >
+            <span>⇥</span> Sign Out
+          </button>
         </div>
       )}
 

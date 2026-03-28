@@ -32,34 +32,6 @@ export function HowItWorks() {
     <section id="how" style={{ padding: "6rem clamp(1.5rem,5vw,3rem)" }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
 
-        {/* Header */}
-        <Reveal>
-          <div style={{ marginBottom: "3.5rem", textAlign: "center" }}>
-            <div style={{ ...token.sectionTag, justifyContent: "center" }}>
-              <span>◈</span> Process
-            </div>
-            <h2 style={{ ...token.sectionTitle, textAlign: "center" }}>
-              How{" "}
-              <em style={{ color: "#00b4c8", fontStyle: "italic" }}>
-                ClaimSure
-              </em>{" "}
-              Works
-            </h2>
-            <p
-              style={{
-                color: "#8a9ab5",
-                maxWidth: "540px",
-                margin: "0 auto",
-                fontSize: "0.9375rem",
-                lineHeight: 1.75,
-              }}
-            >
-              A streamlined four-step workflow designed around how hospitals
-              actually operate — from admission to final settlement.
-            </p>
-          </div>
-        </Reveal>
-
         {/* Two-column: Steps + Image */}
         <div
           style={{

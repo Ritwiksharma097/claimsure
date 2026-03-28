@@ -64,7 +64,7 @@ export default function PatientsPage() {
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) {
         clearToken();
-        router.replace("/login");
+        router.replace("/admin");
         return;
       }
       setError("Failed to load patients");
@@ -87,7 +87,7 @@ export default function PatientsPage() {
       } catch (err) {
         if (err instanceof ApiError && err.status === 401) {
           clearToken();
-          router.replace("/login");
+          router.replace("/admin");
           return;
         }
         setError("Failed to load patient files");
@@ -246,7 +246,7 @@ export default function PatientsPage() {
             } catch (err) {
               if (err instanceof ApiError && err.status === 401) {
                 clearToken();
-                router.replace("/login");
+                router.replace("/admin");
                 return;
               }
               setError("Failed to save patient");

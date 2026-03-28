@@ -56,16 +56,6 @@ export function Contact() {
       >
         {/* ── Left: info ── */}
         <Reveal>
-          <div style={token.sectionTag}>
-            <span>◈</span> Get in Touch
-          </div>
-          <h2 style={token.sectionTitle}>
-            Ready to Transform Your
-            <br />
-            <em style={{ color: "#c9a84c", fontStyle: "italic" }}>
-              Claims Process?
-            </em>
-          </h2>
           <div
             style={{
               width: "48px",

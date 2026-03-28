@@ -11,7 +11,7 @@ export function useAuthGuard() {
 
   useEffect(() => {
     if (!ready) {
-      router.replace("/login");
+      router.replace("/admin");
     }
   }, [ready, router]);
 

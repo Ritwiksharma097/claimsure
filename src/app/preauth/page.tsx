@@ -58,7 +58,7 @@ export default function PreauthPage() {
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) {
         clearToken();
-        router.replace("/login");
+        router.replace("/admin");
         return;
       }
       setError("Failed to load preauths");
@@ -191,7 +191,7 @@ export default function PreauthPage() {
             } catch (err) {
               if (err instanceof ApiError && err.status === 401) {
                 clearToken();
-                router.replace("/login");
+                router.replace("/admin");
                 return;
               }
               setError("Failed to create preauth case. Ensure patient ID exists.");
