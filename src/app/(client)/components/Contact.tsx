@@ -5,9 +5,9 @@ import { useState } from "react";
 import { Reveal, token } from "./utils";
 
 const contactDetails = [
-  { icon: "✉️", label: "Email",    value: "hello@claimsure.site"       },
-  { icon: "📞", label: "Phone",    value: "+91 98765 43210"             },
-  { icon: "📍", label: "Location", value: "Jodhpur, Rajasthan — India"  },
+  { icon: "✉️", label: "Email",    value: "Coming Soon"                 },
+  { icon: "📞", label: "Phone",    value: "Coming Soon"                 },
+  { icon: "📍", label: "Location", value: "Bikaner, Rajasthan — India"  },
 ];
 
 export function Contact() {
