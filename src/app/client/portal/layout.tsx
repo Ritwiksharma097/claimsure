@@ -203,30 +203,28 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
           <button
             onClick={handleLogout}
             style={{
-              padding: "0.5rem 1.1rem",
-              background: "rgba(239,68,68,0.12)",
-              border: "1px solid rgba(239,68,68,0.55)",
+              padding: "0.5rem 1.25rem",
+              background: "rgba(239,68,68,0.15)",
+              border: "1px solid #f87171",
               color: "#f87171",
-              borderRadius: "6px",
-              fontSize: "0.8125rem",
-              fontWeight: 600,
+              borderRadius: "8px",
+              fontSize: "0.875rem",
+              fontWeight: 700,
               cursor: "pointer",
-              letterSpacing: "0.03em",
               transition: "all 0.2s",
               display: "flex",
               alignItems: "center",
-              gap: "5px",
+              gap: "6px",
+              whiteSpace: "nowrap",
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "rgba(239,68,68,0.22)";
-              (e.currentTarget as HTMLElement).style.borderColor = "rgba(239,68,68,0.85)";
+              (e.currentTarget as HTMLElement).style.background = "rgba(239,68,68,0.28)";
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "rgba(239,68,68,0.12)";
-              (e.currentTarget as HTMLElement).style.borderColor = "rgba(239,68,68,0.55)";
+              (e.currentTarget as HTMLElement).style.background = "rgba(239,68,68,0.15)";
             }}
           >
-            <span>⇥</span> Sign Out
+            ⇥ Sign Out
           </button>
         </div>
       </header>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { getPatientAuthHeader, getPatientName, getPatientId, hasValidPatientToken } from "@/lib/patient-auth";
+import { clearPatientSession, getPatientAuthHeader, getPatientId, getPatientName, hasValidPatientToken } from "@/lib/patient-auth";
 import { useRouter } from "next/navigation";
 
 const API = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v1";
@@ -102,8 +102,29 @@ export default function PatientPortalDashboard() {
             pointerEvents: "none",
           }}
         />
-        <div style={{ fontSize: "0.7rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#00b4c8", marginBottom: "0.375rem" }}>
-          ◈ Patient Portal
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
+          <div style={{ fontSize: "0.7rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#00b4c8", marginBottom: "0.375rem" }}>
+            ◈ Patient Portal
+          </div>
+          <button
+            onClick={() => { clearPatientSession(); router.push("/client/portal/login"); }}
+            style={{
+              padding: "0.5rem 1.25rem",
+              background: "rgba(239,68,68,0.12)",
+              border: "1px solid rgba(239,68,68,0.5)",
+              color: "#f87171",
+              borderRadius: "8px",
+              fontSize: "0.875rem",
+              fontWeight: 600,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              flexShrink: 0,
+            }}
+          >
+            ⇥ Sign Out
+          </button>
         </div>
         <h2
           style={{
